@@ -94,7 +94,6 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     const redisKeyAccess = `google:calendar:${userId}:accessToken`;
     const redisKeyRefresh = `google:calendar:${userId}:refreshToken`;
-    const redisKeyUpToDate = `google:calendar:upToDate`;
 
     await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
@@ -107,9 +106,7 @@ app.get('/oauth2/calendar', async (req, res) => {
         if(!teacher) return;
         return teacher.id;
     });
-    updateTeacherCalendarEvents(teacherId);
-    await cache.set(redisKeyUpToDate, 'true', {EX: 1});
-    
+    updateTeacherCalendarEvents(teacherId);    
     res.redirect('http://localhost:3000/calendar');
 });
 

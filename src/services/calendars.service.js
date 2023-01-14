@@ -52,14 +52,27 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             });
     
             if (!eventExists) {
+                let name = event.summary.match(/\s[a-zA-Z]{1,50}/gm);
+                if (name.length) {
+                    name = name.at(0).trim();
+                } else {
+                    name = 'No name';
+                }
+
+                let price = event.summary.match(/[0-9]{1,5}/gm);
+                if (price.length) {
+                    price = parseInt(price.at(0));
+                } else {
+                    price = 0;
+                }
                 await prisma.event.create({
                     data: {
                         id: event.id,
-                        name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                        name: name,
                         startDate: new Date(event.start.dateTime).toISOString(),
                         endDate: new Date(event.end.dateTime).toISOString(),
                         teacherId: teacher.id,
-                        price: parseInt(event.summary.match(/[0-9]{1,5}/gm)?.at(0)) || 0
+                        price: price
                     }
                 });
             } else {
