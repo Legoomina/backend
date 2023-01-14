@@ -4,13 +4,11 @@ import { cache } from '../cache.js'
 import prisma from '../prismaClient.js';
 
 export const updateTeacherCalendarEvents = async (teacherId) => {
-    console.log('user id', teacherId);
     const teacher = await prisma.teacher.findUnique({
         where: {
             id: teacherId
         }
     });
-    console.log('teacjer', teacher);
 
     const redisAccessTokenKey = `google:calendar:${teacher.id}:accessToken`
     const googleAccessToken = await cache.get(redisAccessTokenKey);
@@ -23,7 +21,6 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
     const redisKeyUpToDate = await cache.get(redisKeyUpToDateKey);
 
     if (redisKeyUpToDate) {
-        console.log('Calendar events are up to date')
         return;
     }
 
@@ -77,6 +74,5 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             });
         }
     }
-    console.log('Events updated')
     cache.set(redisKeyUpToDateKey, true, {EX: 900});
 };
