@@ -9,6 +9,7 @@ import cors from 'cors';
 
 import './authenticate.js';
 import authRoutes from './routes/auth.route.js';
+import userRouter from './routes/user.route.js';
 import * as jwt from './services/jwt.service.js'; 
 /* import productRoutes from './routes/product.route.js';
 import {verifyToken} from './middlewares/verifyToken.js';*/
@@ -36,6 +37,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRouter);
 
 
 app.get('/', (req, res) => {
@@ -51,8 +53,10 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', { failureRedi
     console.log('req.user: ', req.user);
     const tokens = jwt.createTokens(req.user);
 
-    //res.redirect('http://localhost:3000');
-    res.send({message: 'google oauth success', tokens: tokens});
+    let getParams = '?accessToken=' + tokens.accessToken + '&refreshToken=' + tokens.refreshToken;
+
+    res.redirect('http://localhost:3000'+getParams);
+    // res.send({message: 'google oauth success', tokens: tokens});
 });
 
 app.listen(3001, () => {

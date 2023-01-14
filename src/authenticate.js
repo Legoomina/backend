@@ -28,7 +28,7 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile' ],
 },
     (accessToken, refreshToken, profile, cb) => {
-        // console.log('profile: ', profile);
+        console.log('profile: ', profile);
         prisma.user.findFirst({
             where: {
                 email: profile.emails[0].value
@@ -43,7 +43,10 @@ passport.use(new GoogleStrategy({
                 prisma.user.create({
                     data: {
                         email: profile.emails[0].value,
-                        origin: 'google'
+                        origin: 'google',
+                        avatar: profile.photos[0].value,
+                        firstName: profile.displayName.split(' ')[0],
+                        lastName: profile.displayName.split(' ')[1]
                     }
                 }).then(user => {
                     return cb(null, {
