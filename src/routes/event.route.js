@@ -6,6 +6,6 @@ import { verifyToken } from "../middlewares/verifyToken.js";
 const router = Router();
 
 router.get('/filter', verifyToken, EventController.filterEvents);
-// router.post('/', verifyToken, EventController.createEvent);
+router.post('/', verifyToken, EventController.createEvent);
 
 export default router;
