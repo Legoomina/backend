@@ -73,7 +73,8 @@ app.get('/oauth2/calendar', async (req, res) => {
     const a = await google.getAccessToken(req.query.code);
     console.log('accessToken: ', a);
     // res.redirect('http://localhost:3000/login/success'+getParams);
-    res.send({message: 'google oauth calendar'});
+    // res.send({message: 'google oauth calendar'});
+    res.send({message: 'google oauth calendar', accessToken: a});
 });
 
 app.listen(3001, () => {
