@@ -49,6 +49,15 @@ model Review {
     userId    Int
 }
 
+model Event {
+    id        String   @unique
+    name      String
+    startDate DateTime
+    endDate   DateTime
+    teacherId Int
+    userId    Int?
+}
+
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
