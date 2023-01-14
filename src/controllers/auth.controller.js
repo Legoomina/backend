@@ -5,6 +5,7 @@ import * as jwt from '../services/jwt.service.js'
 import { validateMail, validatePassword } from "../helpers/validators.js";
 
 export const register = async (req, res) => {
+    console.log(req.body);
     const { email, password } = req.body;
     if (!password || !email) {
         return res.status(400).json({ message: "Missing username, password or email" });

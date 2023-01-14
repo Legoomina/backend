@@ -25,6 +25,7 @@ model Teacher {
     id                   Int      @id @default(autoincrement())
     bio                  String?
     accessibilityOptions String[] @default([])
+    categories           String[] @default([])
     rate                 Float
     user                 User     @relation(fields: [userId], references: [id])
     userId               Int      @unique
@@ -33,7 +34,7 @@ model Teacher {
 
 model Category {
     id   Int    @id @default(autoincrement())
-    name String
+    name String @unique
 }
 
 model Review {
