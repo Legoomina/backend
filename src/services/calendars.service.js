@@ -89,6 +89,7 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                 });
             }
         } catch (error) {
+            console.log(error);
             continue;
         }
     }
