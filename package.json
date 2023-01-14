@@ -1,16 +1,34 @@
 {
-  "name": "backend",
+  "name": "bitehack",
   "version": "1.0.0",
-  "main": "src/app.js",
-  "repository": "https://github.com/Legoomina/backend",
-  "license": "MIT",
-  "type": "module",
+  "description": "",
+  "main": "./src/app.ts",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start-prod": "DEBUG=express:* & NODE_ENV=prod nodemon ./src/app.js",
+    "prestart": "npx prisma generate && npx prisma migrate dev --name init",
+    "start": "DEBUG=express:* & nodemon -L ./src/app.js"
   },
+  "type": "module",
+  "license": "LGPL-2.0",
   "dependencies": {
+    "@prisma/client": "4.8.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "nodemon": "^2.0.20"
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
+    "ms": "^2.1.3",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20",
+    "prisma": "4.8.0"
   }
 }
