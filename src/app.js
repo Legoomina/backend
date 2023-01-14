@@ -64,8 +64,9 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', { failureRedi
 
     let getParams = '?accessToken=' + tokens.accessToken + '&refreshToken=' + tokens.refreshToken;
 
-    // res.redirect('http://localhost:3000/login/success'+getParams);
-    res.send({message: 'google oauth success', tokens: tokens});
+
+    // res.send({message: 'google oauth success', tokens: tokens});
+    res.redirect('http://localhost:3000/login/success' + getParams);
 });
 
 app.get('/oauth2/calendar', async (req, res) => {
@@ -88,7 +89,8 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
-    res.send({message: 'Authorized'});
+    // res.send({message: 'Authorized'});
+    res.redirect('http://localhost:3000/calendar');
 });
 
 app.listen(3001, () => {
