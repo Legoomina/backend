@@ -7,7 +7,7 @@ export const auth = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     "http://localhost:3001/oauth2/calendar"
-)
+);
 
 export const getAccessToken = (code) => {
     return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export const getAccessToken = (code) => {
             resolve(tokens)
         })
     })
-}
+};
 
 export const getInfoAboutGoogleTokenBearer = async (token) => {
     auth.setCredentials({access_token: token});
@@ -52,4 +52,4 @@ export const getInfoAboutGoogleTokenBearer = async (token) => {
         return res;
     })
     return await person; */
-}
+};

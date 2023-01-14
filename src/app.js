@@ -71,6 +71,7 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', { failureRedi
 
 app.get('/oauth2/calendar', async (req, res) => {
     const a = await google.getAccessToken(req.query.code);
+
     const accessToken = a.access_token;
     const refreshToken = a.refresh_token;
     const b = await google.getInfoAboutGoogleTokenBearer(accessToken)
