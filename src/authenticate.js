@@ -40,13 +40,21 @@ passport.use(new GoogleStrategy({
                     email: user.email
                 });
             } else {
+                let firstName, lastName
+                try {
+                    firstName = profile.displayName.split(' ')[0];
+                    lastName = profile.displayName.split(' ')[1];
+                } catch (err) {
+                    firstName = null;
+                    lastName = null;
+                }
                 prisma.user.create({
                     data: {
                         email: profile.emails[0].value,
                         origin: 'google',
                         avatar: profile.photos[0].value,
-                        firstName: profile.displayName.split(' ')[0],
-                        lastName: profile.displayName.split(' ')[1]
+                        firstName: firstName,
+                        lastName: lastName
                     }
                 }).then(user => {
                     return cb(null, {
