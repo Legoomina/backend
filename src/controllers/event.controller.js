@@ -1,5 +1,5 @@
 import prisma from '../prismaClient.js'
-
+import { cache } from '../cache.js'
 
 export const filterEvents = async (req, res) => {
     const id = req.id;
@@ -89,4 +89,29 @@ export const filterEvents = async (req, res) => {
     // TODO WYCIAGNAC Z BAZY EVENTY TEACHEROW
 
     res.status(200).json(parsedTeachers);
+}
+
+
+export const createEvent = async (req, res) => {
+    const id = req.id;
+    
+    const redisKey = `google:calendar:${id}:accessToken`;
+    const accessToken = await cache.get(redisKey);
+    if (!accessToken) return res.status(401).json({ message: "Unauthorized" });
+
+    const { teacherId, date, time, duration, category, description } = req.body;
+    if (!teacherId || !date || !time || !duration || !category || !description) return res.status(400).json({ message: "All fields are required" });
+    if (isNaN(teacherId)) return res.status(400).json({ message: "Teacher id must be a number" });
+    if (isNaN(duration)) return res.status(400).json({ message: "Duration must be a number" });
+    if (isNaN(date)) return res.status(400).json({ message: "Date must be a number" });
+    if (isNaN(time)) return res.status(400).json({ message: "Time must be a number" });
+
+    const teacher = await prisma.teacher.findUnique({
+        where: {
+            userId: parseInt(teacherId)
+        }
+    });
+    if (!teacher) return res.status(404).json({ message: "Teacher not found" });
+    
+    
 }
