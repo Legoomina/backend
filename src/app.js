@@ -18,6 +18,8 @@ import { cache } from './cache.js';
 import * as jwt from './services/jwt.service.js'; 
 import * as google from './services/google.service.js';
 import prisma from './prismaClient.js';
+import { updateTeacherCalendarEvents } from './services/calendars.service.js';
+import { updateTeachersCalendarEvents } from './middlewares/update.js';
 
 dotenv.config({path: './.env'});
 
@@ -39,6 +41,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// middleware
+app.use(updateTeachersCalendarEvents);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRouter);
@@ -87,10 +92,21 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     const redisKeyAccess = `google:calendar:${userId}:accessToken`;
     const redisKeyRefresh = `google:calendar:${userId}:refreshToken`;
+    const redisKeyUpToDate = `google:calendar:${userId}:upToDate`;
 
     await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
+    await cache.set(redisKeyUpToDate, 'true', {EX: 900});
     // res.send({message: 'Authorized'});
+    const teacherId = await prisma.teacher.findFirst({
+        where: {
+            userId: userId
+        }
+    }).then((teacher) => {
+        if(!teacher) return;
+        return teacher.id;
+    });
+    updateTeacherCalendarEvents(teacherId);
     res.redirect('http://localhost:3000/calendar');
 });
 
