@@ -13,6 +13,8 @@ import userRouter from './routes/user.route.js';
 import teacherRouter from './routes/teacher.route.js';
 import categoryRouter from './routes/category.route.js';
 import calendarRouter from './routes/calendar.route.js';
+import eventRouter from './routes/event.route.js';
+
 
 import { cache } from './cache.js';
 import * as jwt from './services/jwt.service.js'; 
@@ -50,7 +52,7 @@ app.use('/api/user', userRouter);
 app.use('/api/teacher', teacherRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/calendar', calendarRouter);
-
+app.use('/api/events', eventRouter);
 
 app.get('/', (req, res) => {
     res.send({ message: 'root of app'});
@@ -107,6 +109,7 @@ app.get('/oauth2/calendar', async (req, res) => {
         return teacher.id;
     });
     updateTeacherCalendarEvents(teacherId);
+    
     res.redirect('http://localhost:3000/calendar');
 });
 
