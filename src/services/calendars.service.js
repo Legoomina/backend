@@ -58,14 +58,21 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             if (!eventExists) {
                 let name = event.summary.match(/\s[a-zA-Z]{1,50}/gm);
                 if (name.length) {
-                    name = name.at(0).trim();
+                    try{
+                        name = name.at(0).trim()
+                    } catch (e) {
+                        name = name[0].trim()
+                    }
                 } else {
                     name = 'No name';
                 }
-
                 let price = event.summary.match(/[0-9]{1,5}/gm);
                 if (price.length) {
-                    price = parseInt(price.at(0));
+                    try {
+                        price = parseInt(price.at(0));
+                    } catch (e) {
+                        price = parseInt(price[0]);
+                    }
                 } else {
                     price = 0;
                 }
