@@ -1,4 +1,3 @@
-import { parse } from "path";
 import prisma from "../prismaClient.js";
 
 
@@ -108,8 +107,6 @@ export const deleteCategories = async (req, res) => {
     });
     return res.status(200).json({ message: "Categories deleted" });
 }
-
-
 
 export const getAllTeachers = async (req, res) => {
     // TODO WYCIAGANIE LEKCJI

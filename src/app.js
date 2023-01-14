@@ -69,16 +69,10 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', { failureRedi
 });
 
 app.get('/oauth2/calendar', async (req, res) => {
-    console.log('req: ', req.query.code);
     const a = await google.getAccessToken(req.query.code);
-    console.log('accessToken: ', a);
-    console.log('accessToken: ', a.access_token);
     const accessToken = a.access_token;
     const refreshToken = a.refresh_token;
-    console.log('accessToken: ', accessToken);
-    console.log('refreshToken: ', refreshToken);
-    const b = await google.getInfoAboutGoogleTokenBearer(accessToken);
-    console.log('person: ', await b);
+    const b = await google.getInfoAboutGoogleTokenBearer(accessToken)
     const userId = await prisma.user.findFirst({
         where: {
             email: b.email
@@ -89,13 +83,12 @@ app.get('/oauth2/calendar', async (req, res) => {
     });
     if (!userId) return res.status(400).send({message: 'User not found'});
 
-    const redisKeyAccess = `google:calendar:${userId}:accessToken:${accessToken}`;
-    const redisKeyRefresh = `google:calendar:${userId}:refreshToken:${refreshToken}`;
+    const redisKeyAccess = `google:calendar:${userId}:accessToken`;
+    const redisKeyRefresh = `google:calendar:${userId}:refreshToken`;
 
-    await cache.set(redisKeyAccess, accessToken);
+    await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
-    // res.redirect('http://localhost:3000/login/success'+getParams);
-    res.send({message: 'essa z rigczem'});
+    res.send({message: 'Authorized'});
 });
 
 app.listen(3001, () => {

@@ -5,7 +5,7 @@ export const getCalendar = async (req, res) => {
     
     const url = google.auth.generateAuthUrl({
         access_type: 'offline',
-        scope: ['https://www.googleapis.com/auth/calendar.events.readonly', 'profile', 'email']
+        scope: ['https://www.googleapis.com/auth/calendar', 'profile', 'email']
     })
     res.redirect(url)
 }
