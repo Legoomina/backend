@@ -1,6 +1,8 @@
 import prisma from '../prismaClient.js'
 import * as googleService from '../services/google.service.js'
 import { google } from 'googleapis'
+import { cache } from '../cache.js'
+
 
 export const authCalendar = async (req, res) => {
 
@@ -12,11 +14,18 @@ export const authCalendar = async (req, res) => {
 }
 
 export const getCalendarEvents = async (req, res) => {
+
+    console.log(req.id);
+    const redisAccessTokenKey = `google:calendar:${req.id}:accessToken`
+    const googleAccessToken = await cache.get(redisAccessTokenKey)
+
+    if(!googleAccessToken) {
+        return res.status(401).send({'message': 'Did not find tokens in cache, could not get calendar events'})
+    }
+
     const credentials = {
-        access_token: req.body.access_token,
-        token_type: 'Bearer',
-        refresh_token: req.body.refresh_token,
-        expiry_date: req.body.expiry_date
+        access_token: googleAccessToken,
+        token_type: 'Bearer'
     }
 
     googleService.auth.setCredentials(credentials)
@@ -28,13 +37,12 @@ export const getCalendarEvents = async (req, res) => {
         singleEvents: true,
         orderBy: 'startTime',
     })
-    console.log('events: ', events)
-    res.send(events.data.items.map(event => {
-        return {
-            id: event.id,
-            summary: event.summary,
-            start: event.start.dateTime,
-            end: event.end.dateTime,
-        }
-    }));
+
+    const parsedEvents = events.data.items.map(e => {
+        return {id: e.id, summary: e.summary, start: e.start, end: e.end}
+    })
+
+    await cache.set(`google:calendar:events:${req.id}`, JSON.stringify(parsedEvents), {EX: 3600})
+
+    res.send(parsedEvents);
 };
