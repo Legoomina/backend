@@ -56,7 +56,7 @@ app.get('/oauth2/redirect/google', passport.authenticate('google', { failureRedi
 
     let getParams = '?accessToken=' + tokens.accessToken + '&refreshToken=' + tokens.refreshToken;
 
-    res.redirect('http://localhost:3000'+getParams);
+    res.redirect('http://localhost:3000/login/success'+getParams);
     // res.send({message: 'google oauth success', tokens: tokens});
 });
 
