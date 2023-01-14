@@ -17,7 +17,7 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
         return new Error('Did not find tokens in cache, could not get calendar events');
     }
 
-    const redisKeyUpToDateKey = `google:calendar:${teacher.id}:upToDate`;
+    const redisKeyUpToDateKey = `google:calendar:upToDate`;
     const redisKeyUpToDate = await cache.get(redisKeyUpToDateKey);
 
     if (redisKeyUpToDate) {
@@ -42,38 +42,41 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
     const parsedEvents = events.data.items.map(e => {
         return {id: e.id, summary: e.summary, start: e.start, end: e.end}
     })
-    console.log(parsedEvents.length);
 
     for (const event of parsedEvents) {
-        const eventExists = await prisma.event.findUnique({
-            where: {
-                id: event.id
-            }
-        });
-
-        if (!eventExists) {
-            await prisma.event.create({
-                data: {
-                    id: event.id,
-                    name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
-                    startDate: new Date(event.start.dateTime).toISOString(),
-                    endDate: new Date(event.end.dateTime).toISOString(),
-                    teacherId: teacher.id,
-                    price: event.summary.match(/[0-9]{1,5}/gm) || 0
-                }
-            });
-        } else {
-            await prisma.event.update({
+        try {
+            const eventExists = await prisma.event.findUnique({
                 where: {
                     id: event.id
-                },
-                data: {
-                    name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
-                    startDate: new Date(event.start.dateTime).toISOString(),
-                    endDate: new Date(event.end.dateTime).toISOString(),
-                    price: event.summary.match(/[0-9]{1,5}/gm) || 0
                 }
             });
+    
+            if (!eventExists) {
+                await prisma.event.create({
+                    data: {
+                        id: event.id,
+                        name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                        startDate: new Date(event.start.dateTime).toISOString(),
+                        endDate: new Date(event.end.dateTime).toISOString(),
+                        teacherId: teacher.id,
+                        price: parseInt(event.summary.match(/[0-9]{1,5}/gm)?.at(0)) || 0
+                    }
+                });
+            } else {
+                await prisma.event.update({
+                    where: {
+                        id: event.id
+                    },
+                    data: {
+                        name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                        startDate: new Date(event.start.dateTime).toISOString(),
+                        endDate: new Date(event.end.dateTime).toISOString(),
+                        price: event.summary.match(/[0-9]{1,5}/gm) || 0
+                    }
+                });
+            }
+        } catch (error) {
+            continue;
         }
     }
     cache.set(redisKeyUpToDateKey, 'true', {EX: 900});

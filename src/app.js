@@ -94,7 +94,7 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     const redisKeyAccess = `google:calendar:${userId}:accessToken`;
     const redisKeyRefresh = `google:calendar:${userId}:refreshToken`;
-    const redisKeyUpToDate = `google:calendar:${userId}:upToDate`;
+    const redisKeyUpToDate = `google:calendar:upToDate`;
 
     await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
