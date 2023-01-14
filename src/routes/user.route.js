@@ -8,5 +8,6 @@ router.get("/", verifyToken, UserController.getUser);
 router.delete("/", verifyToken, UserController.deleteAccount);
 router.put("/location", verifyToken, UserController.changeLocation);
 router.put("/name", verifyToken, UserController.changeName);
+router.put("/accountType", verifyToken, UserController.changeAccoutType);
 
 export default router;

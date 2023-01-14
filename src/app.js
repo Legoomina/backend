@@ -10,9 +10,9 @@ import cors from 'cors';
 import './authenticate.js';
 import authRoutes from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
+import teacherRouter from './routes/teacher.route.js';
+
 import * as jwt from './services/jwt.service.js'; 
-/* import productRoutes from './routes/product.route.js';
-import {verifyToken} from './middlewares/verifyToken.js';*/
 
 
 dotenv.config({path: './.env'});
@@ -38,6 +38,7 @@ app.use(passport.session());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRouter);
+app.use('/api/teacher', teacherRouter);
 
 
 app.get('/', (req, res) => {

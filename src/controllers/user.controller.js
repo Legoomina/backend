@@ -13,7 +13,6 @@ export const getUser = async (req, res) => {
 
 }
 
-
 export const deleteAccount = async (req, res) => {
     const id = req.id;
     const user = await prisma.user.delete({
@@ -55,4 +54,26 @@ export const changeName = async (req, res) => {
     });
     if (!user) return res.status(404).json({ message: "User not found" });
     return res.status(200).json({ message: "Name changed" });
+}
+
+
+export const changeAccoutType = async (req, res) => {
+    const id = req.id;
+
+    const teacher = await prisma.teacher.findUnique({
+        where: {
+            userId: parseInt(id)
+        }
+    });
+
+    if (teacher) return res.status(400).json({ message: "You are already a teacher" });
+    
+    await prisma.teacher.create({
+        data: {
+            userId: parseInt(id),
+            rate: 0,
+        }
+    });
+
+    return res.status(200).json({ message: "Account type changed" });
 }
