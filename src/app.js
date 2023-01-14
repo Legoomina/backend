@@ -98,7 +98,6 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     await cache.set(redisKeyAccess, accessToken, {EX: 3600});
     await cache.set(redisKeyRefresh, refreshToken);
-    await cache.set(redisKeyUpToDate, 'true', {EX: 900});
     // res.send({message: 'Authorized'});
     const teacherId = await prisma.teacher.findFirst({
         where: {
@@ -109,6 +108,7 @@ app.get('/oauth2/calendar', async (req, res) => {
         return teacher.id;
     });
     updateTeacherCalendarEvents(teacherId);
+    await cache.set(redisKeyUpToDate, 'true', {EX: 1});
     
     res.redirect('http://localhost:3000/calendar');
 });

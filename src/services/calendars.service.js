@@ -55,10 +55,11 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             await prisma.event.create({
                 data: {
                     id: event.id,
-                    summary: event.summary,
-                    start: event.start,
-                    end: event.end,
-                    teacher_id: teacher.id,
+                    name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                    startDate: new Date(event.start.date).toISOString(),
+                    endDate: new Date(event.end.date).toISOString(),
+                    teacherId: teacher.id,
+                    price: event.summary.match(/[0-9]{1,5}/gm) || 0
                 }
             });
         } else {
@@ -67,9 +68,10 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                     id: event.id
                 },
                 data: {
-                    summary: event.summary,
-                    start: event.start,
-                    end: event.end,
+                    name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                    startDate: new Date(event.start.date).toISOString(),
+                    endDate: new Date(event.end.date).toISOString(),
+                    price: event.summary.match(/[0-9]{1,5}/gm) || 0
                 }
             });
         }
