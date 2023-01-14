@@ -90,3 +90,9 @@ export const filterEvents = async (req, res) => {
 
     res.status(200).json(parsedTeachers);
 }
+
+
+export const addEvent = async (req, res) => {
+    const id = req.id;
+    
+}

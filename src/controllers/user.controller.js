@@ -84,3 +84,15 @@ export const changeAccoutType = async (req, res) => {
         return res.status(200).json({ message: "Account type changed" });
     }
 }
+
+export const checkType = async (req, res) => {
+    if(!req.id) return res.status(400).json({ message: "User not found" });
+    const id = req.id;
+    const teacher = await prisma.teacher.findUnique({
+        where: {
+            userId: parseInt(id)
+        }
+    });
+    if (teacher) return res.status(200).json({ message: "Teacher" });
+    return res.status(200).json({ message: "user" });
+}
