@@ -66,14 +66,21 @@ export const changeAccoutType = async (req, res) => {
         }
     });
 
-    if (teacher) return res.status(400).json({ message: "You are already a teacher" });
+    if (teacher){
+        await prisma.teacher.delete({
+            where: {
+                userId: parseInt(id)
+            }
+        });
+        return res.status(200).json({ message: "Account type changed" });
+    } else {
+        await prisma.teacher.create({
+            data: {
+                userId: parseInt(id),
+                rate: 0,
+            }
+        });
     
-    await prisma.teacher.create({
-        data: {
-            userId: parseInt(id),
-            rate: 0,
-        }
-    });
-
-    return res.status(200).json({ message: "Account type changed" });
+        return res.status(200).json({ message: "Account type changed" });
+    }
 }
