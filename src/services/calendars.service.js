@@ -4,9 +4,13 @@ import { cache } from '../cache.js'
 import prisma from '../prismaClient.js';
 
 export const updateTeacherCalendarEvents = async (teacherId) => {
+    console.log('updateTeacherCalendarEvents', teacherId);
+    if (!teacherId) {
+        return new Error('No teacherId provided');
+    }
     const teacher = await prisma.teacher.findUnique({
         where: {
-            id: teacherId
+            id: parseInt(teacherId)
         }
     });
 
@@ -76,6 +80,7 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                 });
             }
         } catch (error) {
+            console.log(error);
             continue;
         }
     }

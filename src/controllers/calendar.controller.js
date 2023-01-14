@@ -5,7 +5,7 @@ import { cache } from '../cache.js'
 
 
 export const authCalendar = async (req, res) => {
-
+    console.log('auth calendar');
     const url = googleService.auth.generateAuthUrl({
         access_type: 'offline',
         scope: ['https://www.googleapis.com/auth/calendar', 'profile', 'email']

@@ -101,26 +101,52 @@ export const createEvent = async (req, res) => {
     const accessToken = await cache.get(redisKey);
     if (!accessToken) return res.status(401).json({ message: "Unauthorized" });
 
-    const { teacherId, date, time, duration, category, description } = req.body;
-    if (!teacherId || !date || !time || !duration || !category || !description) return res.status(400).json({ message: "All fields are required" });
-    if (isNaN(teacherId)) return res.status(400).json({ message: "Teacher id must be a number" });
+    const { date, time, duration, category, description } = req.body;
+    if (!date || !time || !duration || !category || !description) return res.status(400).json({ message: "All fields are required" });
     if (isNaN(duration)) return res.status(400).json({ message: "Duration must be a number" });
-    if (isNaN(date)) return res.status(400).json({ message: "Date must be a number" });
-    if (isNaN(time)) return res.status(400).json({ message: "Time must be a number" });
 
-    const teacher = await prisma.teacher.findUnique({
+
+
+
+    /* const teacher = await prisma.teacher.findUnique({
         where: {
-            userId: parseInt(teacherId)
+            userId: parseInt(req.id)
         }
-    });
-    if (!teacher) return res.status(404).json({ message: "Teacher not found" });
+    }); 
+    if (!teacher) return res.status(404).json({ message: "Teacher not found" }); */
+
 
     const credentials = {
-        access_token: googleAccessToken,
+        access_token: accessToken,
         token_type: 'Bearer'
     }
 
+    const calendar = google.calendar({ version: 'v3', auth: credentials });
+    const event = {
+        summary: category,
+        description: description,
+        start: {
+            dateTime: new Date(date + time),
+            timeZone: 'Europe/Warsaw'
+        },
+        end: {
+            dateTime: new Date(date + time + duration),
+            timeZone: 'Europe/Warsaw'
+        },
+    };
 
+    const eventStatus = calendar.events.insert({
+        auth: credentials,
+        calendarId: 'primary',
+        resource: event,
+    }, (err, event) => {
+        if (err) {
+            console.log('There was an error contacting the Calendar service: ' + err);
+            return;
+        }
+        console.log('Event created: %s', event.htmlLink);
+    });
 
-
+    if (!eventStatus) return res.status(400).json({ message: "Event not created" });
+    return res.status(200).json({ message: "Event created" });
 }
