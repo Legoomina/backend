@@ -81,16 +81,20 @@ app.get('/oauth2/calendar', async (req, res) => {
 
     const accessToken = a.access_token;
     const refreshToken = a.refresh_token;
-    const b = await google.getInfoAboutGoogleTokenBearer(accessToken)
+    const user = await google.getInfoAboutGoogleTokenBearer(accessToken)
     const userId = await prisma.user.findFirst({
         where: {
-            email: b.email
+            email: user.email
         }
     }).then((user) => {
         if(!user) return;
         return user.id;
     });
     if (!userId) return res.status(400).send({message: 'User not found'});
+
+    console.log('userId: ', userId);
+    console.log('accessToken: ', accessToken);
+    console.log('refreshToken: ', refreshToken);
 
     const redisKeyAccess = `google:calendar:${userId}:accessToken`;
     const redisKeyRefresh = `google:calendar:${userId}:refreshToken`;

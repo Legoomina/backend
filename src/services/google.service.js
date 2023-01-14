@@ -32,24 +32,4 @@ export const getInfoAboutGoogleTokenBearer = async (token) => {
     .then(json => json);
 
     return info;
-    /* const a = await auth.userinfo.v2.me.get({auth: auth}, (err, res) => {
-        if (err) {
-            console.log('err: ', err);
-        }
-        console.log('res: ', res);
-        return res;
-    })
-    return await a; */
-    /* const person = await google.people('v1').people.get({
-        resourceName: 'people/me',
-        personFields: 'emailAddresses,names,photos',
-        auth: auth
-    }, (err, res) => {
-        if (err) {
-            console.log('err: ', err);
-        }
-        console.log('res: ', res);
-        return res;
-    })
-    return await person; */
 };
