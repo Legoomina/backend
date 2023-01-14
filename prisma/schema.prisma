@@ -7,10 +7,45 @@ generator client {
 }
 
 model User {
-    id       Int     @id @default(autoincrement())
-    email    String  @unique
-    password String?
-    origin   String?
+    id        Int      @id @default(autoincrement())
+    email     String   @unique
+    password  String?
+    origin    String
+    avatar    String?
+    location  String?
+    firstName String?
+    lastName  String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    Teacher   Teacher?
+    Review    Review[]
+}
+
+model Teacher {
+    id                   Int      @id @default(autoincrement())
+    bio                  String?
+    accessibilityOptions String[] @default([])
+    rate                 Float
+    user                 User     @relation(fields: [userId], references: [id])
+    userId               Int      @unique
+    Review               Review[]
+}
+
+model Category {
+    id   Int    @id @default(autoincrement())
+    name String
+}
+
+model Review {
+    id        Int      @id @default(autoincrement())
+    rating    Int
+    comment   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    teacher   Teacher  @relation(fields: [teacherId], references: [id])
+    teacherId Int
+    user      User     @relation(fields: [userId], references: [id])
+    userId    Int
 }
 
 datasource db {
