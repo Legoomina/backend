@@ -56,8 +56,8 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                 data: {
                     id: event.id,
                     name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
-                    startDate: new Date(event.start.date).toISOString(),
-                    endDate: new Date(event.end.date).toISOString(),
+                    startDate: new Date(event.start.dateTime).toISOString(),
+                    endDate: new Date(event.end.dateTime).toISOString(),
                     teacherId: teacher.id,
                     price: event.summary.match(/[0-9]{1,5}/gm) || 0
                 }
@@ -69,12 +69,12 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                 },
                 data: {
                     name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
-                    startDate: new Date(event.start.date).toISOString(),
-                    endDate: new Date(event.end.date).toISOString(),
+                    startDate: new Date(event.start.dateTime).toISOString(),
+                    endDate: new Date(event.end.dateTime).toISOString(),
                     price: event.summary.match(/[0-9]{1,5}/gm) || 0
                 }
             });
         }
     }
-    cache.set(redisKeyUpToDateKey, true, {EX: 900});
+    cache.set(redisKeyUpToDateKey, 'true', {EX: 900});
 };

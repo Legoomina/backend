@@ -67,7 +67,6 @@ export const changeName = async (req, res) => {
     return res.status(200).json({ message: "Name changed" });
 }
 
-
 export const changeAccoutType = async (req, res) => {
     const id = req.id;
 

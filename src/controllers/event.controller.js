@@ -1,5 +1,7 @@
 import prisma from '../prismaClient.js'
 import { cache } from '../cache.js'
+import * as googleService from '../services/google.service.js'
+import { google } from 'googleapis'
 
 export const filterEvents = async (req, res) => {
     const id = req.id;
@@ -112,6 +114,13 @@ export const createEvent = async (req, res) => {
         }
     });
     if (!teacher) return res.status(404).json({ message: "Teacher not found" });
-    
-    
+
+    const credentials = {
+        access_token: googleAccessToken,
+        token_type: 'Bearer'
+    }
+
+
+
+
 }
