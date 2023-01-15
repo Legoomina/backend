@@ -58,6 +58,7 @@ export const filterEvents = async (req, res) => {
                 id: teacher.userId
             }
         });
+        if (!user.location) user.location = "@0,0";
         return {id: user.id, location: user.location};
     }))
     // console.log(locations);

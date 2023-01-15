@@ -47,7 +47,50 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
         return {id: e.id, summary: e.summary, start: e.start, end: e.end}
     })
 
+    
+
+
     for (const event of parsedEvents) {
+        let name = event.summary.match(/\s[a-zA-Z]{1,50}/gm);
+        if (name.length) {
+            try{
+                name = name.at(0).trim()
+            } catch (e) {
+                name = name[0].trim()
+            }
+        } else {
+            name = 'No name';
+        }
+
+        console.log('name', name);
+        const check = await prisma.category.findUnique({
+            where: {
+                name
+            }
+        })
+
+        if (!check){
+            const category = await prisma.category.create({
+                data: {
+                    name: name
+                }
+            });
+        }
+
+        console.log('teacher', teacher.id);
+        let newCategories = teacher.categories.concat([name]);
+        newCategories = [...new Set(newCategories)];
+        console.log(newCategories);
+        await prisma.teacher.update({
+            where: {
+                userId: parseInt(teacher.userId)
+            },
+            data: {
+                categories: newCategories
+            }
+        });
+
+
         try {
             const eventExists = await prisma.event.findUnique({
                 where: {
