@@ -2,6 +2,7 @@ import prisma from '../prismaClient.js'
 import { cache } from '../cache.js'
 import * as googleService from '../services/google.service.js'
 import { google } from 'googleapis'
+import { updateTeacherCalendarEvents } from '../services/calendars.service.js'
 
 export const filterEvents = async (req, res) => {
     const id = req.id;
@@ -211,6 +212,6 @@ export const signToEvent = async (req, res) => {
         console.log(error);
         return res.status(500).send({'message': 'Could not update event'});
     }
-
-    res.status(200).send({'message': 'Event updated', 'eventId': event.id });
+    await cache.del('google:calendar:upToDate');
+    res.status(200).send({'message': 'Event updated', 'eventId': req.query.eventId});
 };
