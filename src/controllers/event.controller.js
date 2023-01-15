@@ -90,8 +90,20 @@ export const filterEvents = async (req, res) => {
         if (distance) return teacher;
     })
     // TODO WYCIAGNAC Z BAZY EVENTY TEACHEROW
+    
+    const parsedEvents = await Promise.all(parsedTeachers.map(async (teacher) => {
+        const events = await prisma.event.findMany({
+            where: {
+                teacherId: teacher.id,
+                name: req.query.category
+            }
+        });
+        return events.concat(teacher);
+    }))
 
-    res.status(200).json(parsedTeachers);
+    console.log(parsedEvents);
+
+    res.status(200).json({events: parsedEvents, user_location: user.location});
 }
 
 
