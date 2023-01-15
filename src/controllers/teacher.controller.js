@@ -10,8 +10,13 @@ export const getTeacher = async (req, res) => {
             userId: parseInt(id),
         },
     });
+    const user = await prisma.user.findUnique({
+        where: {
+            id: parseInt(id)
+        }
+    })
     if (!teacher) return res.status(404).json({ message: "Teacher not found" });
-    return res.status(200).json(teacher);
+    return res.status(200).json({teacher, user});
 }
 
 export const changeBio = async (req, res) => {
