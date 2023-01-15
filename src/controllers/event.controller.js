@@ -149,4 +149,56 @@ export const createEvent = async (req, res) => {
 
     if (!eventStatus) return res.status(400).json({ message: "Event not created" });
     return res.status(200).json({ message: "Event created" });
-}
+};
+
+export const signToEvent = async (req, res) => {
+    const redisAccessTokenKey = `google:calendar:${req.id}:accessToken`
+    const googleAccessToken = await cache.get(redisAccessTokenKey)
+
+    if(!googleAccessToken) {
+        return res.status(401).send({'message': 'Did not find tokens in cache, could not get calendar events'})
+    }
+
+    const credentials = {
+        access_token: googleAccessToken,
+        token_type: 'Bearer'
+    };
+
+    const userId = req.id;
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId
+        }
+    });
+
+    const eventId = req.query.eventId;
+
+    googleService.auth.setCredentials(credentials);
+    const calendar = google.calendar({ version: 'v3', auth: googleService.auth });
+    let event;
+    try {
+        event = await prisma.event.findUnique({
+            where: {
+                id: eventId
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(404).send({'message': 'Event not found'});
+    }	
+    
+    try {
+        event = await calendar.events.patch({
+            calendarId: 'primary',
+            evemtId: eventId,
+            resource: {
+                summary: event.summeary + ` ${user.firstName} ${user.lastName}`,
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({'message': 'Could not update event'});
+    }
+
+    res.status(200).send({'message': 'Event updated', 'eventId': event.id });
+};
