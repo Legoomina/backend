@@ -6,6 +6,6 @@ import { verifyToken } from "../middlewares/verifyToken.js";
 const router = Router();
 
 router.get('/', CalendarController.authCalendar);
-router.get('/events', verifyToken, CalendarController.getCalendarEvents);
+router.get('/events/:id', CalendarController.getCalendarEvents);
 
 export default router;

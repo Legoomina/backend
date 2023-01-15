@@ -14,9 +14,9 @@ export const authCalendar = async (req, res) => {
 }
 
 export const getCalendarEvents = async (req, res) => {
-
-    console.log(req.id);
-    const redisAccessTokenKey = `google:calendar:${req.id}:accessToken`
+    console.log('get calendar events,', req.params);
+    if(!req.params.id) return res.status(400).send({'message': 'Missing id parameter'})
+    const redisAccessTokenKey = `google:calendar:${req.params.id}:accessToken`
     const googleAccessToken = await cache.get(redisAccessTokenKey)
 
     if(!googleAccessToken) {

@@ -58,9 +58,9 @@ export const filterEvents = async (req, res) => {
                 id: teacher.userId
             }
         });
-        return {id: user.id, location: user.location};
+        if (!user.location) user.location = "@0,0";
+        return {id: user.id, location: user.location, bio: teacher.bio, firstName: user.firstName, lastName: user.lastName};
     }))
-    // console.log(locations);
     
     const filterRange = (locations, range) => {
         const location = user.location;
@@ -88,9 +88,9 @@ export const filterEvents = async (req, res) => {
         console.log(distance);
         if (distance) return teacher;
     })
-    // TODO WYCIAGNAC Z BAZY EVENTY TEACHEROW
+    
 
-    res.status(200).json(parsedTeachers);
+    res.status(200).json({teachers: parsedTeachers, user_location: user.location});
 }
 
 
