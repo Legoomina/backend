@@ -14,7 +14,7 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
         }
     });
 
-    const redisAccessTokenKey = `google:calendar:${teacher.id}:accessToken`
+    const redisAccessTokenKey = `google:calendar:${teacher.userId}:accessToken`
     const googleAccessToken = await cache.get(redisAccessTokenKey);
 
     if(!googleAccessToken) {
@@ -54,7 +54,7 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                     id: event.id
                 }
             });
-    
+            console.log('eventExists', event.summary);
             if (!eventExists) {
                 let name = event.summary.match(/\s[a-zA-Z]{1,50}/gm);
                 if (name.length) {
@@ -87,15 +87,35 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
                     }
                 });
             } else {
+                let name = event.summary.match(/\s[a-zA-Z]{1,50}/gm);
+                if (name.length) {
+                    try{
+                        name = name.at(0).trim()
+                    } catch (e) {
+                        name = name[0].trim()
+                    }
+                } else {
+                    name = 'No name';
+                }
+                let price = event.summary.match(/[0-9]{1,5}/gm);
+                if (price.length) {
+                    try {
+                        price = parseInt(price.at(0));
+                    } catch (e) {
+                        price = parseInt(price[0]);
+                    }
+                } else {
+                    price = 0;
+                }
                 await prisma.event.update({
                     where: {
                         id: event.id
                     },
                     data: {
-                        name: event.summary.match(/\s[a-zA-Z]{1,50}/gm)?.at(0).trim() || 'No name',
+                        name: name,
                         startDate: new Date(event.start.dateTime).toISOString(),
                         endDate: new Date(event.end.dateTime).toISOString(),
-                        price: event.summary.match(/[0-9]{1,5}/gm) || 0
+                        price: price
                     }
                 });
             }
@@ -104,5 +124,5 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             continue;
         }
     }
-    cache.set(redisKeyUpToDateKey, 'true', {EX: 900});
+    // cache.set(redisKeyUpToDateKey, 'true', {EX: 900});
 };
