@@ -194,15 +194,16 @@ export const signToEvent = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        return res.status(404).send({'message': 'Event not found'});
+        res.status(404).send({'message': 'Event not found'});
+        return;
     }	
-    
+    const eventSummary = event.summary;
     try {
         event = await calendar.events.patch({
             calendarId: 'primary',
             eventId: eventId,
             resource: {
-                summary: event.summary + ` ${user.firstName} ${user.lastName}`,
+                summary: eventSummary + ` ${user.firstName} ${user.lastName}`,
             }
         });
         console.log(event.summary)
