@@ -7,5 +7,6 @@ const router = Router();
 
 router.get('/filter', verifyToken, EventController.filterEvents);
 router.post('/', verifyToken, EventController.createEvent);
+router.post('/sign', verifyToken, EventController.signToEvent);
 
 export default router;
