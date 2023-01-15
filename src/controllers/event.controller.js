@@ -59,7 +59,8 @@ export const filterEvents = async (req, res) => {
             }
         });
         if (!user.location) user.location = "@0,0";
-        return {id: user.id, location: user.location};
+        //return {id: user.id, location: user.location};
+        return {id: user.id, location: user.location, bio: teacher.bio, firstName: user.firstName, lastName: user.lastName};
     }))
     // console.log(locations);
     
