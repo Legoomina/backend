@@ -15,6 +15,9 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
     });
 
     const redisAccessTokenKey = `google:calendar:${teacher.userId}:accessToken`
+    console.log('teacherId: ', teacherId);
+    console.log('teacher.userId: ', teacher.userId)
+    console.log(redisAccessTokenKey)
     const googleAccessToken = await cache.get(redisAccessTokenKey);
 
     if(!googleAccessToken) {
