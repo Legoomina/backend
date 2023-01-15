@@ -204,7 +204,7 @@ export const signToEvent = async (req, res) => {
             calendarId: 'primary',
             eventId: eventId,
             resource: {
-                summary: eventSummary + ` - ${user.firstName} ${user.lastName}`,
+                summary: eventName + ` - ${user.firstName} ${user.lastName}`,
             }
         });
     } catch (error) {
