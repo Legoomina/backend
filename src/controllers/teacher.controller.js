@@ -7,7 +7,7 @@ export const getTeacher = async (req, res) => {
     if (!id) return res.status(400).json({ message: "Id is required" });
     const teacher = await prisma.teacher.findUnique({
         where: {
-        id: parseInt(id),
+            userId: parseInt(id),
         },
     });
     if (!teacher) return res.status(404).json({ message: "Teacher not found" });
