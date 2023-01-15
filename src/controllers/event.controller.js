@@ -154,7 +154,8 @@ export const createEvent = async (req, res) => {
 export const signToEvent = async (req, res) => {
     const redisAccessTokenKey = `google:calendar:${req.id}:accessToken`
     const googleAccessToken = await cache.get(redisAccessTokenKey)
-
+    console.log(req.id);
+    console.log(googleAccessToken);
     if(!googleAccessToken) {
         return res.status(401).send({'message': 'Did not find tokens in cache, could not get calendar events'})
     }
