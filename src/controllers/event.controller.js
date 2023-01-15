@@ -200,7 +200,7 @@ export const signToEvent = async (req, res) => {
     try {
         event = await calendar.events.patch({
             calendarId: 'primary',
-            evemtId: eventId,
+            eventId: eventId,
             resource: {
                 summary: event.summary + ` ${user.firstName} ${user.lastName}`,
             }
