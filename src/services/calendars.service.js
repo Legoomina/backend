@@ -5,7 +5,8 @@ import prisma from '../prismaClient.js';
 
 export const updateTeacherCalendarEvents = async (teacherId) => {
     if (!teacherId) {
-        return new Error('No teacherId provided');
+        console.log('No teacher id provided');
+        return;
     }
     const teacher = await prisma.teacher.findUnique({
         where: {

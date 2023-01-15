@@ -193,9 +193,10 @@ export const signToEvent = async (req, res) => {
             calendarId: 'primary',
             evemtId: eventId,
             resource: {
-                summary: event.summeary + ` ${user.firstName} ${user.lastName}`,
+                summary: event.summary + ` ${user.firstName} ${user.lastName}`,
             }
         });
+        console.log(event.summary)
     } catch (error) {
         console.log(error);
         return res.status(500).send({'message': 'Could not update event'});
