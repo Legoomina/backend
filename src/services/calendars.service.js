@@ -4,7 +4,6 @@ import { cache } from '../cache.js'
 import prisma from '../prismaClient.js';
 
 export const updateTeacherCalendarEvents = async (teacherId) => {
-    console.log('updateTeacherCalendarEvents', teacherId);
     if (!teacherId) {
         return new Error('No teacherId provided');
     }
@@ -78,7 +77,6 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
         
         let newCategories = teacher.categories.concat([name]);
         newCategories = [...new Set(newCategories)];
-        console.log(newCategories);
         await prisma.teacher.update({
             where: {
                 userId: parseInt(teacher.userId)
@@ -165,5 +163,5 @@ export const updateTeacherCalendarEvents = async (teacherId) => {
             continue;
         }
     }
-    // cache.set(redisKeyUpToDateKey, 'true', {EX: 900});
+    cache.set(redisKeyUpToDateKey, 'true', {EX: 900});
 };

@@ -27,8 +27,7 @@ passport.use(new GoogleStrategy({
     callbackURL: 'http://localhost:3001/oauth2/redirect/google',
     scope: [ 'profile' ],
 },
-    (accessToken, refreshToken, profile, cb) => {
-        console.log('profile: ', profile);
+    (accessToken, refreshToken, profile, cb) => {6
         prisma.user.findFirst({
             where: {
                 email: profile.emails[0].value
