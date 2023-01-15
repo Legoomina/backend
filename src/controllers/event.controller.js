@@ -59,10 +59,8 @@ export const filterEvents = async (req, res) => {
             }
         });
         if (!user.location) user.location = "@0,0";
-        //return {id: user.id, location: user.location};
         return {id: user.id, location: user.location, bio: teacher.bio, firstName: user.firstName, lastName: user.lastName};
     }))
-    // console.log(locations);
     
     const filterRange = (locations, range) => {
         const location = user.location;
@@ -90,21 +88,9 @@ export const filterEvents = async (req, res) => {
         console.log(distance);
         if (distance) return teacher;
     })
-    // TODO WYCIAGNAC Z BAZY EVENTY TEACHEROW
     
-    const parsedEvents = await Promise.all(parsedTeachers.map(async (teacher) => {
-        const events = await prisma.event.findMany({
-            where: {
-                teacherId: teacher.id,
-                name: req.query.category
-            }
-        });
-        return events.concat(teacher);
-    }))
 
-    console.log(parsedEvents);
-
-    res.status(200).json({events: parsedEvents, user_location: user.location});
+    res.status(200).json({teachers: parsedTeachers, user_location: user.location});
 }
 
 
